@@ -1,2 +1,4 @@
 streamlit
-PyMuPDF=1.23.7
+PyMuPDF<=1.23.7
+streamlit-pdf-viewer
+streamlit-extras

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+      {% include 'css/template_css.css' %}
+    </style>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+</head>
+<body>
+  <pre>
+  {%- macro color_type(color) %}
+  {%- if color == "Green" %}
+  <table class='callout_questao'>
+  <tr><th>
+    <p class='font_questao'>Questão</p>
+  </th></tr>
+  <tr><td>
+
+  {%- elif color == 'Orange' %}
+  <table class='callout_exemplo'>
+  <tr><th>
+    <p class='font_exemplo'>Exemplo</p>
+  </th></tr>
+  <tr><td>
+
+  {%- elif color == 'Red' %}
+  <table class='callout_atencao'>
+  <tr><th>
+    <p class='font_atencao'>Atenção</p>
+  </th></tr>
+  <tr><td>
+
+  {%- endif -%}
+  {%- endmacro %}
+  {%- set anterior = namespace('') %}
+  {%- set anterior.content = highlights[0].content %}
+  </pre>
+  <article>
+  {%- for annot  in highlights %}
+    {% if annot.type in ['Square','Ink'] %}
+    {% if annot.has_img %}
+    <img src="{{annot.img_path}}" alt="Imagem da anotação"/>
+    {% if annot.content %}
+    <figcaption>{{annot.content}}</figcaption>
+    {% endif %}
+    {% endif %}
+    {% elif annot.color_name == 'Cyan' %}
+
+    {% if annot.content.upper() == "#H1" or  annot.content.upper() == "H1"%}
+    <h1>{{annot.text}}</h1>
+
+    {% elif annot.content.upper() == "#H2" or  annot.content.upper() == "H2" %}
+    <h2>{{annot.text}}</h2>
+
+    {% elif annot.content.upper() == "#H3" or  annot.content.upper() == "H3" %}
+    <h3>{{annot.text}}</h3>
+
+    {% elif annot.content.upper() == "#H4" or  annot.content.upper() == "H4" %}
+    <h4>{{annot.text}}</h4>
+
+    {% else %}
+    <h1>{{annot.text}}</h1>
+
+    {% endif %}
+    {% elif annot.color_name == 'Yellow' %}
+    <p>
+    {% if annot.content == '-' %}
+
+      <ul>
+      <li>
+      {{annot.text ~ "\n" }}
+      </li>
+      </ul>
+
+    {%- elif annot.content == '+' and anterior.content == '+' -%}
+    {{- " " ~ annot.text ~ " " -}}
+    {%- elif anterior.content == '+' -%}
+    {% if annot.content and annot.content != "+" %}
+    {{- " " ~ annot.text}}
+    <ul><li>{{" " ~ annot.content}}</li></ul>
+    {% else %}
+    {{- " " ~ annot.text}}
+    {% endif %}
+    {% elif annot.content == '+' -%}
+
+    {{annot.text}} 
+    {%- elif annot.content %}
+
+    {{annot.text}}
+   <ul><li>{{annot.content}}</li></ul>
+
+    {% else %}
+
+    {{annot.text}}
+    </p>
+    {% endif %}
+    {# Casos de callout #}
+    {% else %}
+    <p>
+    {%- if annot.content == '+' and anterior.content == '+' -%}
+    <ul>
+      <il>{{ annot.text -}}</il>
+    </ul>
+    {%- elif anterior.content == '+' -%}
+    {% if annot.content and annot.content != "+" %}
+    {{- " " ~ annot.text}}
+    <hr>
+    <ul>
+      <li>
+        {{annot.content}}
+      </li>
+      <ul>
+    {% else %}
+    {{- " " ~ annot.text}}
+    {% endif %}
+    {% elif annot.content == '+' -%}
+    {{color_type(annot.color_name)}}
+    <ul><li>{{annot.text}} </li></ul>
+
+    {%- elif annot.content %}
+    {{color_type(annot.color_name)}}
+    {{annot.text}}
+    <ul>
+      <li>
+    {{annot.content}}
+      </li>
+    </ul>
+    {% else %}
+    {{color_type(annot.color_name)}}
+    {{annot.text}}
+    {%- if annot.content -%}
+    <ul>
+      <li>
+        {{annot.content}}
+      </li>
+    </ul>
+    {%- endif -%}
+
+
+    {% endif %}
+    </td></tr>
+    </table>
+    {% endif %}
+    {%- if annot.content %}
+    {%- set anterior.content = annot.content -%}
+    {%- else -%}
+    {%- set anterior.content = '' -%}
+    {% endif -%}
+    </p>
+  {% endfor -%}
+
+
+</article>
+
+</body>
+</html>

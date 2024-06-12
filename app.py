@@ -58,13 +58,13 @@ def load_html(folder, html):
 
 def load_pdf(folder, pdf_file):
     selected_file = os.path.join(folder, pdf_file)
-    local_file = re.sub('\\\\','/',selected_file)
+    local_file =  selected_file # re.sub('\\\\','/',selected_file)
     if os.path.exists(selected_file):
         print('pdf localizado')
         pdf_viewer(input = local_file, width=1000)
     else:
         print('PDF NÃO LOCALIZADO')
-        pdf_viewer(input = local_file, width=1000)
+        # pdf_viewer(input = local_file, width=1000)
 
 
 number_of_annots = 0

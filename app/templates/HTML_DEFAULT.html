@@ -51,21 +51,20 @@
     {% endif %}
     {{ texto }}
   {% elif annot.color_name == 'Cyan' %}
-
-    {% if annot.content.upper() == "#H1" or  annot.content.upper() == "H1"%}
-    {% set texto = texto + '<h1>' + annot.text + '</h1>' %} 
-
-    {% elif annot.content.upper() == "#H2" or  annot.content.upper() == "H2" %}
-    {% set texto = texto + '<h2>' + annot.text + '</h2>' %} 
-
-    {% elif annot.content.upper() == "#H3" or  annot.content.upper() == "H3" %}
-    {% set texto = texto + '<h3>' + annot.text + '</h3>' %} 
-
-    {% elif annot.content.upper() == "#H4" or  annot.content.upper() == "H4" %}
-    {% set texto = texto + '<h4>' + annot.text + '</h4>' %} 
-
-    {% else %}
-    {% set texto = texto + '<h1>' + annot.text + '</h1>' %} 
+    {% if annot.text %}
+        {% if annot.content.upper() == "#H1" or  annot.content.upper() == "H1"%}
+            {% set texto = texto + '<h1>' + annot.text + '</h1>' %}
+        {% elif annot.content.upper() == "#H2" or  annot.content.upper() == "H2" %}
+            {% set texto = texto + '<h2>' + annot.text + '</h2>' %} 
+        {% elif annot.content.upper() == "#H3" or  annot.content.upper() == "H3" %}
+            {% set texto = texto + '<h3>' + annot.text + '</h3>' %} 
+        {% elif annot.content.upper() == "#H4" or  annot.content.upper() == "H4" %}
+            {% set texto = texto + '<h4>' + annot.text + '</h4>' %} 
+        {% else %}
+            {% set texto = texto + '<h1>' + annot.text + '</h1>' %} 
+        {% endif %}
+    {% elif annot.content %}
+        {% set texto = texto + '<h1>' + annot.content + '</h1>' %} 
     {% endif %}
   {% elif annot.color_name == 'Yellow' %}
     {% if annot.content == '-' %}

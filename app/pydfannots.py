@@ -413,14 +413,24 @@ class NoteExtractor:
                     pdf_page.delete_annot(annotation)
 
                 user_space = annot['rect_coord']
+                # for user_space_index in range(0, 4):
+                #     if user_space[user_space_index] < 0:
+                #         user_space[user_space_index] = 0
                 # area = pdf_page.get_pixmap(dpi = 300)
-                area = pdf_page.bound()
+                page_size = pdf_page.bound()
                 # area = area.derotation_matrix
+                
+                # print(page_size)
+                area = fitz.Rect()
 
-                area.x0 = user_space[0] * area.x1
-                area.x1 = user_space[2] * area.x1
-                area.y0 = user_space[1] * area.y1
-                area.y1 = user_space[3] * area.y1
+                area.x0 = user_space[0] * page_size.x1
+                area.x1 = user_space[2] * page_size.x1
+                area.y0 = user_space[1] * page_size.y1
+                area.y1 = user_space[3] * page_size.y1
+
+                if area.x0 == area.x1 or area.y0 == area.y1:
+                    continue
+
 
                 clip = fitz.Rect(area.tl, area.br)
 
@@ -454,10 +464,15 @@ class NoteExtractor:
                 # img_folder = os.path.abspath(img_folder)
                 img_folder = re.sub('/+', '/', img_folder)
                 img_folder = utils.path_normalizer(img_folder)
+                
+                condition_size = clip.x0 >= 0.0 and clip.x1 >= 0.0 and clip.y0 >= 0.0 and clip.y1 >= 0.0
+                condition_height = clip.y0 <= page_size.y0  and clip.y1 <= page_size.y1
+                condition_width = clip.x0 <= page_size.x0  and clip.x1 <= page_size.x1
 
-                img = pdf_page.get_pixmap(clip=clip, dpi=300)
-                # print(file_export)
-                img.save(file_export)
+                if condition_size and condition_height and condition_width:
+                    # print(page_size)
+                    img = pdf_page.get_pixmap(clip=clip, dpi=300)
+                    img.save(file_export)
 
                 if os.path.exists(file_export):
                     annot['has_img'] = True

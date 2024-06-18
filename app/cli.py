@@ -193,16 +193,16 @@ def main(args=None):
         file_title = re.sub("[.].*$", "", file_title)
 
         if args.template == "":
-            extension = re.sub(".*[.](.*)$", "\\1", extractor.config["DEFAULT_TEMPLATE"])
+            extension = re.sub(".*[.]([A-Za-z0-9]+)$", "\\1", extractor.config["DEFAULT_TEMPLATE"])
         else:
-            extension = re.sub(".*[.](.*)$", "\\1", args.template)
+            extension = re.sub(".*[.]([A-Za-z0-9]+)$", "\\1", args.template)
 
         if args.format == "json":
             extension = "json"
         if args.format == "csv":
             extension = "csv"
 
-        
+
         if os.path.isdir(export_file):
             export_file = export_file + "//" + file_title + "." + extension
             export_file = os.path.abspath(export_file)
@@ -218,7 +218,7 @@ def main(args=None):
         image_extract =  configs["IMAGE"]
         ink_extract =  configs["INK"]
 
-        
+
         if args.intersection_level != extractor.config["INTERSECTION_LEVEL"]:
             extractor.notes_extract(intersection_level=args.intersection_level)
         else:
@@ -259,7 +259,7 @@ def main(args=None):
             # print(names_fields)
             names_fields = list(set(names_fields))
             with open(export_file, 'w', encoding='utf-8') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=names_fields, doublequote=True, lineterminator="\n", quotechar='"')
+                writer = csv.DictWriter(csvfile, fieldnames=names_fields, delimiter=',', doublequote=True, lineterminator="\n", quotechar='"',quoting=csv.QUOTE_NONNUMERIC)
                 writer.writeheader()
                 writer.writerows(highlight)
             return 0

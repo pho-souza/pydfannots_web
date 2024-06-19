@@ -164,3 +164,4 @@ temp/
 export/
 .streamlit
 static/
+pydfannots_web/

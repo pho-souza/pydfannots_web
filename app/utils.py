@@ -223,6 +223,7 @@ def annots_reorder_columns(
     for i in range(0, columns + 1):
         col_widget = (1 / columns) * i
         columns_x.append(col_widget)
+    
 
     # Get all values
     pages = []
@@ -252,7 +253,6 @@ def annots_reorder_columns(
             annotation['y'] = y0
             column_min = columns_x[column - 1] - tolerance
             column_max = columns_x[column] + tolerance
-            # print("\n\n\nColumn: ", column, "\n Min: ", column_min, "\nMax: ", column_max)
             if (
                 x0 >= column_min
                 and x0 < column_max
@@ -269,8 +269,9 @@ def annots_reorder_columns(
                 annotation_index_x1.append(index)
 
     for annotation in annotations:
-        # len_column_annot = len(annotation['column']) - 1
-        if annotation['column'][0] == annotation['column'][1]:
+        print(f'Rect_Coord:- Type: {annotation['type']}')
+        len_column_annot = len(annotation['column']) - 1
+        if annotation['column'][0] == annotation['column'][len_column_annot]:
             annotation['column'] = annotation['column'][0]
         elif annotation['column'][0] == 1:
             annotation['column'] = 1.0

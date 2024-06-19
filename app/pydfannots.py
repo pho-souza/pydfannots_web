@@ -120,6 +120,23 @@ class NoteExtractor:
                     anotacao['rect_coord'][3] = (
                         anotacao['rect_coord'][3] / page_bound[3]
                     )
+                    
+                    # Check coord:
+                   #  bigger_than_page = True
+                    bigger_than_page = (
+                        anotacao['rect_coord'][0] < 0.0 or
+                        anotacao['rect_coord'][1] < 0.0 or
+                        anotacao['rect_coord'][2] < 0.0 or
+                        anotacao['rect_coord'][3] < 0.0 or
+                        anotacao['rect_coord'][0] > 1.0 or
+                        anotacao['rect_coord'][1] > 1.0 or
+                        anotacao['rect_coord'][2] > 1.0 or
+                        anotacao['rect_coord'][3] > 1.0
+                    )
+                    
+                    if bigger_than_page:
+                        continue
+
                     # print(annot.type[1])
                     anotacao['start_xy'] = anotacao['rect_coord'][0:2]
                     text = ''

@@ -428,11 +428,11 @@ class NoteExtractor:
                 area.y0 = user_space[1] * page_size.y1
                 area.y1 = user_space[3] * page_size.y1
 
-                if area.x0 == area.x1 or area.y0 == area.y1:
-                    continue
-
 
                 clip = fitz.Rect(area.tl, area.br)
+                
+                if area.x0 == area.x1 or area.y0 == area.y1:
+                    continue
 
                 # clip.set_rotation(number_of_rotation)
                 # print(clip)
@@ -466,8 +466,14 @@ class NoteExtractor:
                 img_folder = utils.path_normalizer(img_folder)
                 
                 condition_size = clip.x0 >= 0.0 and clip.x1 >= 0.0 and clip.y0 >= 0.0 and clip.y1 >= 0.0
-                condition_height = clip.y0 <= page_size.y0  and clip.y1 <= page_size.y1
-                condition_width = clip.x0 <= page_size.x0  and clip.x1 <= page_size.x1
+                condition_height = clip.y0 >= page_size.y0  and clip.y1 <= page_size.y1
+                condition_width = clip.x0 >= page_size.x0  and clip.x1 <= page_size.x1
+                
+                # print(f'Condition size: {condition_size}')
+                # print(f'Condition height: {condition_height}')
+                # print(f'Condition width: {condition_width}')
+                # print(f'clip: {clip}')
+                # print(f'page_size: {page_size}')
 
                 if condition_size and condition_height and condition_width:
                     # print(page_size)

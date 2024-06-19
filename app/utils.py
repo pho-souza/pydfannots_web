@@ -269,8 +269,8 @@ def annots_reorder_columns(
                 annotation_index_x1.append(index)
 
     for annotation in annotations:
-        len_column_annot = len(annotation['column']) - 1
-        if annotation['column'][0] == annotation['column'][len_column_annot]:
+        # len_column_annot = len(annotation['column']) - 1
+        if annotation['column'][0] == annotation['column'][1]:
             annotation['column'] = annotation['column'][0]
         elif annotation['column'][0] == 1:
             annotation['column'] = 1.0

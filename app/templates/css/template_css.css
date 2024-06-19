@@ -1,27 +1,55 @@
 .callout_questao{
     background-color: #85e795;
-    border-radius: 1em;
     padding: 1em;
+    border-color: green;
 }
+
+.callout_questao th{
+  background-color: green;
+}
+
 .callout_atencao{
-    background-color: peru;
+    background-color: lightcoral;
     padding: 1em;
-    border-radius: 1em;
+    border-color: rgb(171, 52, 52);
+}
+.callout_atencao th{
+  background-color: rgb(171, 52, 52);
+}
+.callout_exemplo th{
+    background-color: darkorange;
 }
 .callout_exemplo{
-    background-color: greenyellow;
-    border-radius: 1em;
-    padding: 1em;
+  background-color: orange;
+  border-color: darkorange;
+  padding: 1em;
 }
+
+.callout_legislacao th{
+  background-color: darkcyan;
+}
+.callout_legislacao{
+background-color: lightblue;
+border-color: darkcyan;
+padding: 1em;
+}
+
 body{
     margin-left: 1em;
     background-color: #e2e2e2;
     font-family: 'Garamond', Times, serif;
 }
+
+table{
+  margin-top: 1em;
+  margin-botton: 1em;
+}
+
 article{
     margin: auto;
-    # width: 50%;
-    border: 3px solid grey;
+    max-width: 95%;
+    min-width: 75%;
+    /*border: 3px solid grey;*/
     padding: 10px;
     text-align:justify;
 }
@@ -52,10 +80,7 @@ img{
 }
 
 /* Reset padrão */
-html, body {
-  margin: 0;
-  padding: 0;
-}
+
 
 /* Estilos globais */
 body {

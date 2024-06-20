@@ -166,3 +166,5 @@ export/
 static/
 pydfannots_web/
 venv_test/
+export.zip
+examples/*

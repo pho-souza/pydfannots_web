@@ -146,7 +146,7 @@ with tab_extract:
     else:
         create_folder()
         pdf_file_exist = False
-        st.error("Não há arquivo PDF.")
+        st.error(TEXTS["textErrorPDF"][DEFAULT_LANGUAGE])
 
     for arq in arquivo:
         if arq is not None:

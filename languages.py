@@ -82,6 +82,10 @@ texts = {
         - Caso o destaque anterior seja do <font color="yellow">tipo de texto</font>, o próximo destaque fechará uma tag que não existe, mas o efeito prático será uma nota continuando a anterior.
         '''
     },
+    'textErrorPDF': {
+        'en': 'There is no PDF file',
+        'pt_br': 'Não há arquivo PDF.'
+    },
     'tabTemplate': {
         'en': 'Template',
         'pt_br': 'Template'

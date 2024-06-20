@@ -1,4 +1,4 @@
-[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](README.pt-br.md)
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](README-pt-BR.md)
 
 This project is a web version of [PyDFannots](https://github.com/pho-souza/PyDFannots/).
 

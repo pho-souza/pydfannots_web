@@ -71,7 +71,7 @@ O exemplo a seguir usa annotation como a anotação atual no loop. text é um ca
 
 Você pode acessar todos os campos desta maneira:
 
-```
+```jinja2
 {% for annotation in annotations %}
 {{annotation.content}}
 {{annotation.text}}

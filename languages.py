@@ -13,8 +13,8 @@ texts = {
     'Homepage': {
         'en': '''
         # PyDF Annotation Extractor
-
-        - This webapp aims to extract notes and higlights from PDF files.
+        
+        - This site aims to extract annotations from PDF files.
         - The results are downloaded in a zipped file.
         ''',
         'pt_br': '''
@@ -36,9 +36,7 @@ texts = {
         'en': '''
         # Illustrative PDF
         
-        The example is the following image:
-        
-        ![Sample PDF](test/sample.png)
+        The image below illustrates the sample PDF, viewed in the last tab.
         ''',
         'pt_br': '''
         # PDF ilustrativo
@@ -48,21 +46,21 @@ texts = {
     },
     'textPDFtest_continue': {
         'en': '''
-       If the highlight has a comment, it will come right below the highlight as a thread.
+       If a highlight has a comment, it will appear just below the highlight as a topic.
 
-        If the note in a highlight has the text "+", the highlighted text will be concatenated with the text in the next note.
+       If a note on a highlight has the text "+", the highlighted text will be concatenated with the text of the next annotation.
+       
+        If the annotation is a square, an image capture of the location where the square was created will be made.
+        
+        The colors are represented according to the theme. By default, red will be an attention item; green will be a question; orange will be an example, and blue will be legislation.
 
-        If the annotation is a square, an image capture of the location where the square was created is created.
+        The <font color="cyan">cyan color</font> will be a title. If the note is "H1," "H2," "H3," or "H4," a title representing that heading will be created.
 
-        The colors are represented according to the theme. By default, red will be an attention item; green will be an issue; orange will be an example and blue will be legislation.
+        I haven't yet created a theme that changes according to the user's options for color and title. This is to be implemented in future versions.
 
-        The <font color="cyan">cyan color</font> will be a title. If the note is "H1", "H2", "H3" or "H4", a title representing that title will be created.
-
-        I haven't yet created a theme that changes according to the user's choices for color and title. It is to be implemented in future versions.
-
-        By default, the extraction order will be by the X and Y position of the annotation, so be careful with the organization: if you use a "+" note in an annotation with a different color then the two problems may occur:
-        - If the previous highlight is the type that generates a callout (<font color="green">green</font>, <font color="lightblue">blue</font>, <font color="red">red </font> or <font color="orange">orange</font>), the next highlight will be concatenated into the previous callout
-        - If the previous highlight is of the <font color="yellow">text type</font>, the next highlight will close a tag that does not exist, but the practical effect will be a note continuing the previous one.
+        By default, the extraction order will be by the X and Y position of the annotation, so be careful with the organization: if you use a "+" note in an annotation with a different color next, two problems may occur:
+        - If the previous highlight is of the type that generates a callout (<font color="green">green</font>, <font color="blue">blue</font>, <font color="red">red</font>, or <font color="orange">orange</font>), the next highlight will be concatenated with the previous callout.
+        - If the previous highlight is of the <font color="yellow">text type</font>, the next highlight will close a tag that doesn't exist, but the practical effect will be a note continuing from the previous one.
         ''',
         'pt_br': '''
         Se o destaque tiver um comentário, ele virá logo abaixo do destaque como um tópico.
@@ -83,7 +81,7 @@ texts = {
         '''
     },
     'textErrorPDF': {
-        'en': 'There is no PDF file',
+        'en': 'There is no PDF file attached.',
         'pt_br': 'Não há arquivo PDF.'
     },
     'tabTemplate': {
@@ -98,7 +96,7 @@ texts = {
         'en': '''
         # Example
         
-        This page will show your extraction will look using the PDF example.
+        This page shows you how the annotation file will look using the example.
         ''',
         'pt_br': '''
         # Exemplo
@@ -112,7 +110,7 @@ texts = {
     },
     'sidebarTemplateChoose':{
         'en': 'Which template do you want to use?',
-        'pt_br': 'Qual template você deseja.'
+        'pt_br': 'Qual template você quer usar?'
     },
     'sidebarLanguageChoose':{
         'en': 'Which language do you want?',

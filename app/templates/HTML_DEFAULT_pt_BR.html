@@ -16,28 +16,28 @@
 {%- if color == "Green" %}
 <table class='callout_questao'>
 <tr><th>
-  <p class='font_questao'>❓Question</p>
+  <p class='font_questao'>❓Questão</p>
 </th></tr>
 <tr><td>
 
 {%- elif color == 'Orange' %}
 <table class='callout_exemplo'>
 <tr><th>
-  <p class='font_exemplo'>🔎 Example</p>
+  <p class='font_exemplo'>🔎 Examplo</p>
 </th></tr>
 <tr><td>
 
 {%- elif color == 'Red' %}
 <table class='callout_atencao'>
 <tr><th>
-  <p class='font_atencao'>⚠️ Attention</p>
+  <p class='font_atencao'>⚠️ Atenção</p>
 </th></tr>
 <tr><td>
 
 {%- elif color == 'Blue' %}
 <table class='callout_legislacao'>
 <tr><th>
-  <p class='font_atencao'>⚖️ Legislation</p>
+  <p class='font_atencao'>⚖️ Legislação</p>
 </th></tr>
 <tr><td>
 
@@ -116,19 +116,15 @@
       {% endif %}
        {% set texto = texto + '\n</td></tr></table>\n' %}
     {% elif annot.content == '+' and annot.text %}
-    
       {% set texto = texto + color_type(annot.color_name) +'\n' %}
       {% set texto = texto + '<p>' + annot.text + ' ' %}
     {% elif annot.content and annot.text %}
-    
       {% set texto = texto + color_type(annot.color_name) %}
       {% set texto = texto + '<p>' + annot.text + '</p>\n<hr><ul><li>' + annot.content + '</li></ul></td></tr></table>' %}
     {% elif annot.text %}
-    
       {% set texto = texto + color_type(annot.color_name) %}
       {% set texto = texto + '<p>' + annot.text + '</p></td></tr></table>' %}
     {% elif annot.content %}
-    
       {% set texto = texto + color_type(annot.color_name) %}
       {% set texto = texto + '<ul><li>' + annot.content + '</li></ul></td></tr></table>' %}
     {% endif %}

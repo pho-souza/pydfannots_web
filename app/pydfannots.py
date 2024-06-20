@@ -16,7 +16,7 @@ from app.cfg import Config_file
 
 
 class NoteExtractor:
-    def __init__(self, file: str = ''):
+    def __init__(self, file: str = ""):
         """
         Initalize the NoteExtractor class and initial variables.
         Args:
@@ -25,9 +25,9 @@ class NoteExtractor:
         self.add_pdf(file)
         self.add_config()
         self.__threshold_intersection = self.config[
-            'INTERSECTION_LEVEL'
+            "INTERSECTION_LEVEL"
         ]  # if the intersection is large enough.
-        self.__path_template = os.path.abspath(self.config['TEMPLATE_FOLDER'])
+        self.__path_template = os.path.abspath(self.config["TEMPLATE_FOLDER"])
         self.highlights = list()
         self.metadata = None
         self.pages = list()
@@ -38,21 +38,21 @@ class NoteExtractor:
         """
         self.close()
 
-    def add_pdf(self, file: str = '', filebyte = None):
+    def add_pdf(self, file: str = "", filebyte=None):
         """
         Load PDF file.
         """
-        if file == '':
+        if file == "":
             pass
         elif not os.path.exists(file):
-            raise ValueError('This file does not exist.')
+            raise ValueError("This file does not exist.")
         elif os.path.isdir(file):
-            raise ValueError('This path is a folder.')
-        elif re.search('[.](pdf|PDF)', os.path.basename(file)) == None:
+            raise ValueError("This path is a folder.")
+        elif re.search("[.](pdf|PDF)", os.path.basename(file)) == None:
             print(file)
-            raise ValueError('This is not a PDF file.')
+            raise ValueError("This is not a PDF file.")
         elif os.path.getsize(file) == 0:
-            raise ValueError('Cannot open empty PDF.')
+            raise ValueError("Cannot open empty PDF.")
 
         if filebyte:
             self.file = filebyte
@@ -89,9 +89,7 @@ class NoteExtractor:
             color: color extract from annotation in RGB list.
         """
         if intersection_level > 1.0 or intersection_level < 0.0:
-            raise ValueError(
-                'Intersection level must be beteween 0.0 and 1.0.'
-            )
+            raise ValueError("Intersection level must be beteween 0.0 and 1.0.")
 
         self.__threshold_intersection = intersection_level
         for page_num in self.list_pages:
@@ -99,65 +97,65 @@ class NoteExtractor:
             page_bound = list(page.bound())
             annotations = page.annot_xrefs()
             if annotations:
-                words = page.get_text('words')
+                words = page.get_text("words")
                 for annot in page.annots():
                     # margin = (-2, -2, 2, 2)
                     anotacao = {}
-                    anotacao['type'] = annot.type[1]
-                    anotacao['page'] = page_num + 1
-                    anotacao['author'] = annot.info['title']
-                    anotacao['rect_coord'] = list(annot.rect)
+                    anotacao["type"] = annot.type[1]
+                    anotacao["page"] = page_num + 1
+                    anotacao["author"] = annot.info["title"]
+                    anotacao["rect_coord"] = list(annot.rect)
                     # Adjust by page size
-                    anotacao['rect_coord'][0] = (
-                        anotacao['rect_coord'][0] / page_bound[2]
+                    anotacao["rect_coord"][0] = (
+                        anotacao["rect_coord"][0] / page_bound[2]
                     )
-                    anotacao['rect_coord'][1] = (
-                        anotacao['rect_coord'][1] / page_bound[3]
+                    anotacao["rect_coord"][1] = (
+                        anotacao["rect_coord"][1] / page_bound[3]
                     )
-                    anotacao['rect_coord'][2] = (
-                        anotacao['rect_coord'][2] / page_bound[2]
+                    anotacao["rect_coord"][2] = (
+                        anotacao["rect_coord"][2] / page_bound[2]
                     )
-                    anotacao['rect_coord'][3] = (
-                        anotacao['rect_coord'][3] / page_bound[3]
+                    anotacao["rect_coord"][3] = (
+                        anotacao["rect_coord"][3] / page_bound[3]
                     )
-                    
+
                     # Check coord:
-                   #  bigger_than_page = True
+                    #  bigger_than_page = True
                     bigger_than_page = (
-                        anotacao['rect_coord'][0] < 0.0 or
-                        anotacao['rect_coord'][1] < 0.0 or
-                        anotacao['rect_coord'][2] < 0.0 or
-                        anotacao['rect_coord'][3] < 0.0 or
-                        anotacao['rect_coord'][0] > 1.0 or
-                        anotacao['rect_coord'][1] > 1.0 or
-                        anotacao['rect_coord'][2] > 1.0 or
-                        anotacao['rect_coord'][3] > 1.0
+                        anotacao["rect_coord"][0] < 0.0
+                        or anotacao["rect_coord"][1] < 0.0
+                        or anotacao["rect_coord"][2] < 0.0
+                        or anotacao["rect_coord"][3] < 0.0
+                        or anotacao["rect_coord"][0] > 1.0
+                        or anotacao["rect_coord"][1] > 1.0
+                        or anotacao["rect_coord"][2] > 1.0
+                        or anotacao["rect_coord"][3] > 1.0
                     )
-                    
+
                     if bigger_than_page:
                         continue
 
                     # print(annot.type[1])
-                    anotacao['start_xy'] = anotacao['rect_coord'][0:2]
-                    text = ''
+                    anotacao["start_xy"] = anotacao["rect_coord"][0:2]
+                    text = ""
                     if (
                         annot.vertices
                         and len(annot.vertices) >= 4
-                        and not annot.type[1] in ['Ink', 'Freetext']
+                        and not annot.type[1] in ["Ink", "Freetext"]
                     ):
                         text = self.__extract_annot(annot, words)
-                        anotacao['text'] = text
-                    anotacao['content'] = annot.info['content']
-                    anotacao['created'] = annot.info['creationDate']
-                    anotacao['modified'] = annot.info['modDate']
-                    anotacao['has_img'] = False
-                    anotacao['img_path'] = ''
-                    if annot.colors['fill']:
-                        anotacao['color'] = list(annot.colors['fill'])
-                    elif annot.colors['stroke']:
-                        anotacao['color'] = list(annot.colors['stroke'])
+                        anotacao["text"] = text
+                    anotacao["content"] = annot.info["content"]
+                    anotacao["created"] = annot.info["creationDate"]
+                    anotacao["modified"] = annot.info["modDate"]
+                    anotacao["has_img"] = False
+                    anotacao["img_path"] = ""
+                    if annot.colors["fill"]:
+                        anotacao["color"] = list(annot.colors["fill"])
+                    elif annot.colors["stroke"]:
+                        anotacao["color"] = list(annot.colors["stroke"])
                     else:
-                        anotacao['color'] = list((0, 0, 0))
+                        anotacao["color"] = list((0, 0, 0))
                     self.highlights.append(anotacao)
 
             self.reorder_columns(columns=1)
@@ -186,39 +184,35 @@ class NoteExtractor:
                 pages.append(page.number)
         self.pages = pages
         return pages
-    
+
     @property
     def number_of_pages(self):
         return self.pdf.page_count
 
-    def add_config(self, config=''):
+    def add_config(self, config=""):
         """Add configuration file
 
         Args:
             config (str): Path to json config file.
         """
-        is_empty_file = config == ''
+        is_empty_file = config == ""
 
         if not is_empty_file:
             if not os.path.exists(config):
-                raise ValueError(
-                    f'The config file "{config}" file does not exist.'
-                )
+                raise ValueError(f'The config file "{config}" file does not exist.')
             elif os.path.isdir(config):
-                raise ValueError(f'{config} path is a folder.')
-            elif re.search('[.](json|JSON)', os.path.basename(config)) == None:
-                raise ValueError(
-                    f'The config file "{config}" is not a json file.'
-                )
+                raise ValueError(f"{config} path is a folder.")
+            elif re.search("[.](json|JSON)", os.path.basename(config)) == None:
+                raise ValueError(f'The config file "{config}" is not a json file.')
             elif os.path.getsize(config) == 0:
                 raise ValueError(f'Cannot open "{config}". Empty document')
 
         self.config = Config_file(config).config
 
-        utils.DEFAULT_COLOR = self.config['DEFAULT_COLOR']
-        utils.PATH = self.config['TEMPLATE_FOLDER']
-        utils.DEFAULT_TEMPLATE = self.config['DEFAULT_TEMPLATE']
-        utils.DEFAULT_COLOR = self.config['DEFAULT_COLOR']
+        utils.DEFAULT_COLOR = self.config["DEFAULT_COLOR"]
+        utils.PATH = self.config["TEMPLATE_FOLDER"]
+        utils.DEFAULT_TEMPLATE = self.config["DEFAULT_TEMPLATE"]
+        utils.DEFAULT_COLOR = self.config["DEFAULT_COLOR"]
 
         reload(utils)
 
@@ -258,7 +252,7 @@ class NoteExtractor:
         """
         quad_points = annot.vertices
         quad_count = int(len(quad_points) / 4)
-        sentences = ['' for i in range(quad_count)]
+        sentences = ["" for i in range(quad_count)]
         for i in range(quad_count):
             points = quad_points[i * 4 : i * 4 + 4]
             words = [
@@ -266,8 +260,8 @@ class NoteExtractor:
                 for w in words_on_page
                 if self.__check_contain(r_word=fitz.Rect(w[:4]), points=points)
             ]
-            sentences[i] = ' '.join(w[4] for w in words)
-        sentence = ' '.join(sentences)
+            sentences[i] = " ".join(w[4] for w in words)
+        sentence = " ".join(sentences)
 
         return sentence
 
@@ -281,20 +275,20 @@ class NoteExtractor:
         full_path = os.path.abspath(path)
 
         if os.path.exists(full_path) is False:
-            raise ValueError('This file does not exist.')
+            raise ValueError("This file does not exist.")
 
         file_name = os.path.basename(full_path)
 
-        move_path = self.__path_template + '/' + file_name
+        move_path = self.__path_template + "/" + file_name
 
         move_path = os.path.abspath(move_path)
 
         if os.path.isfile(full_path):
             shutil.copy(src=full_path, dst=move_path)
-            print('File {} imported into {}'.format(full_path, move_path))
+            print("File {} imported into {}".format(full_path, move_path))
         if os.path.isdir(full_path):
             shutil.copytree(src=full_path, dst=move_path)
-            print('Folder {} imported into {}'.format(full_path, move_path))
+            print("Folder {} imported into {}".format(full_path, move_path))
 
     def rename_template(self, name: str, new_name: str):
         """
@@ -306,19 +300,19 @@ class NoteExtractor:
         """
         # print(type(name))
         if name not in self.templates:
-            raise ValueError('This template does not exist.')
+            raise ValueError("This template does not exist.")
 
         if name:
-            actual_file = self.__path_template + '/' + name
+            actual_file = self.__path_template + "/" + name
             # actual_file = utils.path_normalizer(os.path.abspath(actual_file))
             actual_file = os.path.abspath(actual_file)
         if new_name:
-            new_file = self.__path_template + '/' + new_name
+            new_file = self.__path_template + "/" + new_name
             # new_file = utils.path_normalizer(os.path.abspath(new_file))
             new_file = os.path.abspath(new_file)
         if os.path.exists(actual_file):
             shutil.move(actual_file, new_file)
-            print('File {} renamed to {}'.format(actual_file, new_file))
+            print("File {} renamed to {}".format(actual_file, new_file))
 
     def remove_template(self, name: str):
         """Remove template from template folder
@@ -327,13 +321,13 @@ class NoteExtractor:
             name (str): Template to be removed
         """
         if name not in self.templates:
-            raise ValueError('This template does not exist.')
+            raise ValueError("This template does not exist.")
 
-        file = self.__path_template + '//' + name
+        file = self.__path_template + "//" + name
         file = utils.path_normalizer(os.path.abspath(file))
         if os.path.exists(file):
             os.remove(file)
-            print('File {} removed from templates folder'.format(file))
+            print("File {} removed from templates folder".format(file))
 
     @property
     def templates(self):
@@ -363,19 +357,17 @@ class NoteExtractor:
         Converts the created date to the format YYYY-MM-DD HH:mm:ss
         """
         for annot in self.highlights:
-            date_created = re.sub('D:', '', annot['created'])
-            date_modified = re.sub('D:', '', annot['modified'])
+            date_created = re.sub("D:", "", annot["created"])
+            date_modified = re.sub("D:", "", annot["modified"])
             # Extract Date in format: YYYY-MM-DD HH:MM:SS
-            regex_pattern_date = '([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2}).*'
-            regex_export_date = r'\1-\2-\3 \4:\5:\6'
-            date_created = re.sub(
-                regex_pattern_date, regex_export_date, date_created
+            regex_pattern_date = (
+                "([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2}).*"
             )
-            date_modified = re.sub(
-                regex_pattern_date, regex_export_date, date_modified
-            )
-            annot['created'] = date_created
-            annot['modified'] = date_modified
+            regex_export_date = r"\1-\2-\3 \4:\5:\6"
+            date_created = re.sub(regex_pattern_date, regex_export_date, date_created)
+            date_modified = re.sub(regex_pattern_date, regex_export_date, date_modified)
+            annot["created"] = date_created
+            annot["modified"] = date_modified
 
     def adjust_color(self):
         """
@@ -383,22 +375,22 @@ class NoteExtractor:
         color names. The default color is Yellow
         """
         for annot in self.highlights:
-            color = annot['color']
+            color = annot["color"]
             color_hls = utils.convert_to_hls(color)
             colors = utils.colors_names(color_hls)
-            annot['color_name'] = colors
+            annot["color_name"] = colors
 
     def adjust_text(self):
         """
         Adjust text with hifenization and remove all the linebreaks from content.
         """
         for annot in self.highlights:
-            text = annot['content']
+            text = annot["content"]
             text = utils.cleanup_text(text)
             text = utils.merge_lines(captured_text=text, remove_hyphens=True)
-            annot['content'] = text
+            annot["content"] = text
 
-    def extract_image(self, location: str, folder='img/'):
+    def extract_image(self, location: str, folder="img/"):
         """
         Extract the images from Square annotations and save as png files.
 
@@ -408,12 +400,12 @@ class NoteExtractor:
             Folder created inside location to store images.
         """
         self.reload()
-        if 'annot_number' not in locals():
+        if "annot_number" not in locals():
             annot_number = 0
         for annot in self.highlights:
-            if annot['type'] == 'Square':
+            if annot["type"] == "Square":
                 annot_number = annot_number + 1
-                page_number = annot['page']
+                page_number = annot["page"]
                 page = page_number - 1
 
                 pdf_page = self.pdf[page]
@@ -429,14 +421,14 @@ class NoteExtractor:
                     # print(annotation)
                     pdf_page.delete_annot(annotation)
 
-                user_space = annot['rect_coord']
+                user_space = annot["rect_coord"]
                 # for user_space_index in range(0, 4):
                 #     if user_space[user_space_index] < 0:
                 #         user_space[user_space_index] = 0
                 # area = pdf_page.get_pixmap(dpi = 300)
                 page_size = pdf_page.bound()
                 # area = area.derotation_matrix
-                
+
                 # print(page_size)
                 area = fitz.Rect()
 
@@ -445,9 +437,8 @@ class NoteExtractor:
                 area.y0 = user_space[1] * page_size.y1
                 area.y1 = user_space[3] * page_size.y1
 
-
                 clip = fitz.Rect(area.tl, area.br)
-                
+
                 if area.x0 == area.x1 or area.y0 == area.y1:
                     continue
 
@@ -456,36 +447,37 @@ class NoteExtractor:
 
                 if not os.path.exists(location):
                     os.mkdir(location)
-                if not os.path.exists(location + '/' + folder):
-                    os.mkdir(location + '/' + folder)
+                if not os.path.exists(location + "/" + folder):
+                    os.mkdir(location + "/" + folder)
 
-                file = re.sub('(.*/|.*\\\\)', '', self.file)
-                file = re.sub('[.]pdf', '', file)
-                file = re.sub('[ -]+', '_', file)
-                file = re.sub('[_]+', '_', file)
+                file = re.sub("(.*/|.*\\\\)", "", self.file)
+                file = re.sub("[.]pdf", "", file)
+                file = re.sub("[ -]+", "_", file)
+                file = re.sub("[_]+", "_", file)
                 file = utils.path_normalizer(file)
                 page = page + 1
 
-                file_name = (
-                    file + '_p' + str(page) + '_' + str(annot_number) + '.png'
-                )
+                file_name = file + "_p" + str(page) + "_" + str(annot_number) + ".png"
 
-                file_export = location + '/' + folder + '/' + file_name
+                file_export = location + "/" + folder + "/" + file_name
                 # print(file_export)
 
-                file_export = utils.path_normalizer(
-                    os.path.abspath(file_export)
-                )
+                file_export = utils.path_normalizer(os.path.abspath(file_export))
 
-                img_folder = folder + '/' + file_name
+                img_folder = folder + "/" + file_name
                 # img_folder = os.path.abspath(img_folder)
-                img_folder = re.sub('/+', '/', img_folder)
+                img_folder = re.sub("/+", "/", img_folder)
                 img_folder = utils.path_normalizer(img_folder)
-                
-                condition_size = clip.x0 >= 0.0 and clip.x1 >= 0.0 and clip.y0 >= 0.0 and clip.y1 >= 0.0
-                condition_height = clip.y0 >= page_size.y0  and clip.y1 <= page_size.y1
-                condition_width = clip.x0 >= page_size.x0  and clip.x1 <= page_size.x1
-                
+
+                condition_size = (
+                    clip.x0 >= 0.0
+                    and clip.x1 >= 0.0
+                    and clip.y0 >= 0.0
+                    and clip.y1 >= 0.0
+                )
+                condition_height = clip.y0 >= page_size.y0 and clip.y1 <= page_size.y1
+                condition_width = clip.x0 >= page_size.x0 and clip.x1 <= page_size.x1
+
                 # print(f'Condition size: {condition_size}')
                 # print(f'Condition height: {condition_height}')
                 # print(f'Condition width: {condition_width}')
@@ -498,24 +490,20 @@ class NoteExtractor:
                     img.save(file_export)
 
                 if os.path.exists(file_export):
-                    annot['has_img'] = True
-                    annot['img_path'] = img_folder
+                    annot["has_img"] = True
+                    annot["img_path"] = img_folder
                     if number_of_rotation > 0:
                         img_pil = Image.open(fp=file_export)
-                        img_pil = img_pil.rotate(
-                            -number_of_rotation, expand=True
-                        )
+                        img_pil = img_pil.rotate(-number_of_rotation, expand=True)
                         img_pil.save(fp=file_export)
                         img_pil.close()
                 else:
-                    annot['has_img'] = False
-                    annot['img_path'] = ''
+                    annot["has_img"] = False
+                    annot["img_path"] = ""
 
             self.reload()
 
-    def reorder_custom(
-        self, criteria=['page', 'start_xy'], ascending: bool = True
-    ):
+    def reorder_custom(self, criteria=("page", "start_xy"), ascending: bool = True):
         """
         Reorder the annotations using annotation structure variables.
 
@@ -557,7 +545,7 @@ class NoteExtractor:
         self.close()
         self.pdf = fitz.open(self.file)
 
-    def extract_ink(self, location: str, folder='img/'):
+    def extract_ink(self, location: str, folder="img/"):
         """
         Extract the ink annotations and save as png files.
 
@@ -565,18 +553,17 @@ class NoteExtractor:
             location: path location
             folder: folder created inside location to store images.
         """
-        list_pages = dict()
-        if 'annot_number' not in locals():
+        if "annot_number" not in locals():
             annot_number = 0
         for annot in self.highlights:
-            if annot['type'] == 'Ink':
-                if 'anterior_page' not in locals():
-                    anterior_page = annot['page']
-                    anterior_userspace = annot['rect_coord']
+            if annot["type"] == "Ink":
+                if "anterior_page" not in locals():
+                    anterior_page = annot["page"]
+                    anterior_userspace = annot["rect_coord"]
                     anterior = 1
 
                 annot_number = annot_number + 1
-                page_number = annot['page']
+                page_number = annot["page"]
                 page = page_number - 1
 
                 pdf_page = self.pdf[page]
@@ -590,12 +577,12 @@ class NoteExtractor:
                 # Remove annotations in the page
                 try:
                     for annots in pdf_page.annots():
-                        if annots.type[1] != 'Ink':
+                        if annots.type[1] != "Ink":
                             pdf_page.delete_annot(annots)
                 except:
                     pass
 
-                user_space = annot['rect_coord']
+                user_space = annot["rect_coord"]
                 # area = pdf_page.get_pixmap(dpi = 300)
                 area = pdf_page.bound()
                 page_area = pdf_page.bound()
@@ -616,45 +603,38 @@ class NoteExtractor:
                 #     )
                 # else:
                 #     anterior = 1
-                area.x0 = user_space[0] * area.x1
-                area.x1 = user_space[2] * area.x1
-                area.y0 = user_space[1] * area.y1
-                area.y1 = user_space[3] * area.y1
+                area.x0 = user_space[0] * page_area.x1
+                area.x1 = user_space[2] * page_area.x1
+                area.y0 = user_space[1] * page_area.y1
+                area.y1 = user_space[3] * page_area.y1
 
                 clip = fitz.Rect(area.tl, area.br)
-                page_numeration = 'p_' + str(page + 1)
+                page_numeration = "p_" + str(page + 1)
 
                 if not os.path.exists(location):
                     os.mkdir(location)
-                if not os.path.exists(location + '/' + folder):
-                    os.mkdir(location + '/' + folder)
+                if not os.path.exists(location + "/" + folder):
+                    os.mkdir(location + "/" + folder)
 
-                file = re.sub('(.*/|.*\\\\)', '', self.file)
-                file = re.sub('[.]pdf', '', file)
-                file = re.sub('[ -]+', '_', file)
-                file = re.sub('[_]+', '_', file)
+                file = re.sub("(.*/|.*\\\\)", "", self.file)
+                file = re.sub("[.]pdf", "", file)
+                file = re.sub("[ -]+", "_", file)
+                file = re.sub("[_]+", "_", file)
                 file = utils.path_normalizer(file)
                 page = page + 1
 
                 file_name = (
-                    file
-                    + '_p'
-                    + str(page)
-                    + '_ink_'
-                    + str(annot_number)
-                    + '.png'
+                    file + "_p" + str(page) + "_ink_" + str(annot_number) + ".png"
                 )
 
-                file_export = location + '/' + folder + '/' + file_name
+                file_export = location + "/" + folder + "/" + file_name
                 # print(file_export)
 
-                file_export = utils.path_normalizer(
-                    os.path.abspath(file_export)
-                )
+                file_export = utils.path_normalizer(os.path.abspath(file_export))
 
-                img_folder = folder + '/' + file_name
+                img_folder = folder + "/" + file_name
                 # img_folder = os.path.abspath(img_folder)
-                img_folder = re.sub('/+', '/', img_folder)
+                img_folder = re.sub("/+", "/", img_folder)
                 img_folder = utils.path_normalizer(img_folder)
 
                 img = pdf_page.get_pixmap(clip=clip, dpi=300)
@@ -662,18 +642,16 @@ class NoteExtractor:
                 img.save(file_export)
 
                 if os.path.exists(file_export):
-                    annot['has_img'] = True
-                    annot['img_path'] = img_folder
+                    annot["has_img"] = True
+                    annot["img_path"] = img_folder
                     if number_of_rotation > 0:
                         img_pil = Image.open(fp=file_export)
-                        img_pil = img_pil.rotate(
-                            -number_of_rotation, expand=True
-                        )
+                        img_pil = img_pil.rotate(-number_of_rotation, expand=True)
                         img_pil.save(fp=file_export)
                         img_pil.close()
                 else:
-                    annot['has_img'] = False
-                    annot['img_path'] = ''
+                    annot["has_img"] = False
+                    annot["img_path"] = ""
 
                 # file_export = location + '/' + folder + '/' + file_name
                 # # print(file_export)
@@ -734,7 +712,7 @@ class NoteExtractor:
         #             annot['img_path'] = ''
 
         for annot in self.highlights[:]:
-            if annot['type'] == 'Ink' and not 'has_img' in annot:
+            if annot["type"] == "Ink" and not "has_img" in annot:
                 # print(annot)
                 self.highlights.remove(annot)
         self.reload()

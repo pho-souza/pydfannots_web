@@ -165,3 +165,4 @@ export/
 .streamlit
 static/
 pydfannots_web/
+venv_test/

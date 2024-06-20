@@ -1,27 +1,38 @@
+"""
+This 
+"""
 import os
 import re
 import shutil
-import tempfile
-import zipfile
-from io import StringIO
 
 import streamlit as st
 import streamlit.components.v1 as components
-from streamlit_extras.stylable_container import stylable_container
-from streamlit_pdf_viewer import pdf_viewer
 
 import app.cli as cli
 import languages as lang
+
+st.set_page_config(
+    page_title="PyDFannots",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 CUSTOM_CSS_MK = """
 <style>
 img{
     max-width: 100%;
 }
+blockquote{
+    background-color: orange;
+    color: black;
+    border-left-width: 10px;
+    border-color: orangered;
+}
 </style>
 """
 
 DEFAULT_LANGUAGE = "en"
+DEFAULT_TEMPLATE = "HTML_DEFAULT.html"
 TEXTS = lang.texts
 
 
@@ -83,24 +94,10 @@ def load_html(folder, html):
         st.json(source_code)
 
 
-def load_pdf(folder, pdf_file):
-    """load_pdf will insert the pdf_file in the page
-
-    Args:
-        folder (_type_): string
-        pdf_file (_type_): _description_
-    """
-    local_file = os.path.join(folder, pdf_file)
-    if os.path.exists(local_file):
-        print("pdf localizado")
-        pdf_viewer(input=local_file, width=1000)
-    else:
-        print("PDF NÃO LOCALIZADO")
-        # pdf_viewer(input = local_file, width=1000)
-
 
 NUMBER_OF_ANNOTS = {}
 create_folder()
+create_folder("export")
 
 language_select = st.sidebar.selectbox(
     TEXTS["sidebarLanguageChoose"][DEFAULT_LANGUAGE], lang.languages
@@ -124,16 +121,18 @@ if str(type_of_export) == "template":
 
 tab_extract, tab_pdf_example, tab_templates, tab_example = st.tabs(
     [
-        TEXTS["tabExtract"][DEFAULT_LANGUAGE], 
+        TEXTS["tabExtract"][DEFAULT_LANGUAGE],
         TEXTS["tabPDFtest"][DEFAULT_LANGUAGE],
         TEXTS["tabTemplate"][DEFAULT_LANGUAGE],
-        TEXTS["tabExample"][DEFAULT_LANGUAGE]
+        TEXTS["tabExample"][DEFAULT_LANGUAGE],
     ]
 )
 
 with tab_extract:
     file_list = []
-    arquivo = st.file_uploader(TEXTS["btnSendFile"][DEFAULT_LANGUAGE], type=["pdf"],accept_multiple_files=True)
+    arquivo = st.file_uploader(
+        TEXTS["btnSendFile"][DEFAULT_LANGUAGE], type=["pdf"], accept_multiple_files=True
+    )
     # create_folder("export")
     pdf_file_exist = False
     arquivo_pdf = ""
@@ -164,7 +163,7 @@ with tab_extract:
             NUMBER_OF_ANNOTS[arq.name] = cli.main(argument_NUMBER_OF_ANNOTS)
             if NUMBER_OF_ANNOTS[arq.name] > 0:
                 any_pdf_has_annot = True
-            st.write(f"{arquivo_pdf} has {NUMBER_OF_ANNOTS[arq.name]} annotations")
+            # st.write(f"{arquivo_pdf} has {NUMBER_OF_ANNOTS[arq.name]} annotations")
 
         if any_pdf_has_annot:
             with st.form(key="my_form"):
@@ -191,7 +190,7 @@ with tab_extract:
                 submit_form = st.form_submit_button("Export annotations")
             if submit_form:
                 # print(export_folder)
-                # create_folder(export_folder)
+                create_folder("export")
                 if str(type_of_export) == "template":
                     argument_export = (
                         ["--columns", str(int(number_columns))]
@@ -218,8 +217,12 @@ with tab_extract:
                         argument_input = ["-i", arquivo_pdf]
                         folder_name = re.sub("[.][PDFpdf]+$", "", arq.name)
                         export_folder = os.path.join("export")
-                        argument_export_final = argument_input + argument_export + ["-o", str(export_folder)]
-                        st.text(str(argument_export_final))
+                        argument_export_final = (
+                            argument_input
+                            + argument_export
+                            + ["-o", str(export_folder)]
+                        )
+                        # st.text(str(argument_export_final))
                         print(argument_export_final)
                         cli.main(argument_export_final)
                         print("Export complete!")
@@ -230,30 +233,22 @@ with tab_extract:
                     download_button = st.download_button(
                         "Download file", data=file, file_name="annotations.zip"
                     )
-            else:
-                st.write(
-                    f"This file has {NUMBER_OF_ANNOTS} annotations. Attach a PDF with highlights."
-                )
+            # else:
+            #     st.write(
+            #         f"This file has {NUMBER_OF_ANNOTS} annotations. Attach a PDF with highlights."
+            #     )
 
 with tab_pdf_example:
-    st.markdown(
-        """
-    # PDF ilustrativo
-    
-    - O PDF abaixo é um exemplo
-    """
-    )
+    st.markdown(TEXTS["textPDFtest"][DEFAULT_LANGUAGE])
+    img_pdf = os.path.join("test", "sample.png")
+    st.image(img_pdf)
+    st.markdown(TEXTS["textPDFtest_continue"][DEFAULT_LANGUAGE], unsafe_allow_html=True)
     selected_file = os.path.join("test", "sample.pdf")
-    # with open(selected_file, 'rb') as fo:
-    #     pdf_viewer(input = fo)
-    load_pdf("test", "sample.pdf")
 
 
 with tab_example:
     create_folder("examples")
-    st.markdown(
-        TEXTS["textExample"][DEFAULT_LANGUAGE]
-    )
+    st.markdown(TEXTS["textExample"][DEFAULT_LANGUAGE])
     templates_folder = os.path.join("app", "templates")
     files = os.listdir(templates_folder)
     st.markdown(
@@ -266,7 +261,7 @@ with tab_example:
     argument_NUMBER_OF_ANNOTS = argument_input + ["--count-annotations"]
     NUMBER_OF_ANNOTS = cli.main(argument_NUMBER_OF_ANNOTS)
     if NUMBER_OF_ANNOTS > 0:
-        st.write(f"This file has {NUMBER_OF_ANNOTS} annotations")
+        # st.write(f"This file has {NUMBER_OF_ANNOTS} annotations")
         number_columns = st.number_input(
             "Number of columns:", min_value=1, value="min", max_value=10
         )
@@ -279,7 +274,7 @@ with tab_example:
         )
         tolerance_level = st.number_input(
             "Tolerance interval for columns:",
-            min_value=0.0,
+            min_value=0.01,
             value=0.10,
             max_value=1.0,
             step=0.05,

@@ -3,13 +3,24 @@
 {% macro color_type(color) %}
 {%- if color == "Green" %}
 
-> [!question]
+
+> [!questao]
+>
 {%- elif color == 'Orange' %}
 
-> [!example]
+
+> [!exemplo]
+>
 {%- elif color == 'Red' %}
 
+
 > [!atencao]
+>
+{%- elif color == 'Blue' %}
+
+
+> [!legislacao]
+>
 {%- endif -%}
 {% endmacro %}
 

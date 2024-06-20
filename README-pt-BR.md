@@ -1,3 +1,5 @@
+[![en](https://img.shields.io/badge/lang-en-red.svg)](README.md)
+
 Este projeto é uma versão web do [PyDFannots](https://github.com/pho-souza/PyDFannots/).
 
 # Pré-requisitos
